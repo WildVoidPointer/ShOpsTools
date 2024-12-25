@@ -2,7 +2,7 @@
 
 
 host_ipaddr=$(cat /etc/resolv.conf | grep -oP '(?<=nameserver\ ).*')
-proxy_port=10809
+proxy_port=7897
 
 
 set_proxy() {
