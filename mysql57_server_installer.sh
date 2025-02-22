@@ -5,7 +5,7 @@ MYSQL_PKG_PATH='mysql-5.7.44-linux-glibc2.12-x86_64.tar.gz'
 
 MYSQL_PKG_DIR='mysql-5.7.44-linux-glibc2.12-x86_64'
 
-MYSQL_INSTALL_PATH='/usr/local/mysql57'
+MYSQL_INSTALL_PATH='/usr/local/bin/mysql57'
 
 
 function set_error_log {
@@ -80,7 +80,7 @@ function set_the_pkg_path {
 }
 
 
-function install_dep_of_mysql {
+function install_dependancy_of_mysql {
     sudo apt update
     sudo apt install -y libncurses5
     sudo apt install -y libaio1
