@@ -1,16 +1,23 @@
 #!/bin/bash
 
 
-host_ipaddr=$(cat /etc/resolv.conf | grep -oP '(?<=nameserver\ ).*')
-proxy_port=7897
+ADMIN_HOST_IPADDR=$(cat /etc/resolv.conf | grep -oP '(?<=nameserver\ ).*')
+SHELL_PROFILE_PATH="~./.bashrc"
+PROXY_PORT=7897
 
+
+cat >> "$SHELL_PROFILE_PATH" <<EOF
 
 set_proxy() {
-    export https_proxy="http://${host_ipaddr}:${proxy_port}"
-    export http_proxy="http://${host_ipaddr}:${proxy_port}"
-    export all_proxy="http://${host_ipaddr}:${proxy_port}"
-    echo -e "Acquire::http::Proxy \"http://${host_ipaddr}:${proxy_port}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null
-    echo -e "Acquire::https::Proxy \"http://${host_ipaddr}:${proxy_port}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null
+    export https_proxy="http://${ADMIN_HOST_IPADDR}:${PROXY_PORT}"
+    export http_proxy="http://${ADMIN_HOST_IPADDR}:${PROXY_PORT}"
+    export all_proxy="http://${ADMIN_HOST_IPADDR}:${PROXY_PORT}"
+
+    echo -e "Acquire::http::Proxy \"http://${ADMIN_HOST_IPADDR}:${PROXY_PORT}\";" \
+    | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null
+
+    echo -e "Acquire::https::Proxy \"http://${ADMIN_HOST_IPADDR}:${PROXY_PORT}\";" \
+    | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null
 }
 
 
@@ -26,3 +33,6 @@ unset_proxy() {
 export -f set_proxy
 export -f unset_proxy
 
+EOF
+
+source "$SHELL_PROFILE_PATH"
