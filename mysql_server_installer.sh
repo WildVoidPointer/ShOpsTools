@@ -4,6 +4,12 @@ MYSQL_PKG_PATH='mysql-5.7.44-linux-glibc2.12-x86_64.tar.gz'
 
 MYSQL_INSTALL_PATH='/usr/local/bin/mysql57'
 
+MYSQL_INITIALIZE_LOG_PATH='/mysql_initialize_error.log'
+
+MYSQL_ENV_CONF_PATH='/etc/profile'
+
+MYSQL_DATA_DIR_PATH="${MYSQL_INSTALL_PATH}/data"
+
 
 function set_mysql_install_error_log {
     timestamp=$(date "+%Y-%m-%d %H:%M:%S")
@@ -117,16 +123,16 @@ function configurate_mysql_filemod_and_user {
         set_mysql_install_error_log "Cannot enter $MYSQL_INSTALL_PATH"
     fi
 
-    sudo mkdir data
+    sudo mkdir -p "$MYSQL_DATA_DIR_PATH"
 
-    if ! is_exist_of_mysql_resource data
+    if ! is_exist_of_mysql_resource "$MYSQL_DATA_DIR_PATH"
     then
         exit 1
     fi
 
-    sudo chown mysql:mysql data
+    sudo chown mysql:mysql "$MYSQL_DATA_DIR_PATH"
 
-    sudo chmod 750 data
+    sudo chmod 750 "$MYSQL_DATA_DIR_PATH"
 }
 
 
@@ -136,9 +142,9 @@ function initilaize_and_activate_mysql_server {
 
     sudo ./bin/mysqld --initialize --user=mysql \
         --lc-messages-dir=${MYSQL_INSTALL_PATH}/share/ \
-        --datadir=${MYSQL_INSTALL_PATH}/data/ &> /mysql_initialize_error.log
+        --datadir=${MYSQL_INSTALL_PATH}/data/ &> "$MYSQL_INITIALIZE_LOG_PATH"
 
-    sudo bin/mysql_ssl_rsa_setup --datadir=${MYSQL_INSTALL_PATH}/data
+    sudo bin/mysql_ssl_rsa_setup --datadir=${MYSQL_DATA_DIR_PATH}
 
     ./bin/mysqld_safe --user=mysql &
 
@@ -148,7 +154,7 @@ function initilaize_and_activate_mysql_server {
 
     sudo /etc/init.d/mysql.server start
 
-    echo "export PATH=$PATH:$MYSQL_INSTALL_PATH/bin" >> /etc/profile
+    echo "export PATH=$PATH:$MYSQL_INSTALL_PATH/bin" >> "$MYSQL_ENV_CONF_PATH"
 }
 
 
