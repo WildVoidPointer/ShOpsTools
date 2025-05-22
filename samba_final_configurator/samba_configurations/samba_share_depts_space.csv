@@ -1,0 +1,12 @@
+root,company,0555,/samba/public,
+root,company,0770,/samba/company_exchange
+root,accounting,0770,/samba/departments/accounting/share
+root,accounting,0750,/samba/departments/accounting/users
+root,engineering,0770,/samba/departments/engineering/share
+root,engineering,0750,/samba/departments/engineering/users
+root,leadership,0770,/samba/departments/leadership/share
+root,leadership,0750,/samba/departments/leadership/users
+root,technology,0770,/samba/departments/technology/share
+root,technology,0750,/samba/departments/technology/users
+root,sales,0770,/samba/departments/sales/share
+root,sales,0750,/samba/departments/sales/users

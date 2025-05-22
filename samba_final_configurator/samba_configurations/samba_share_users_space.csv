@@ -1,0 +1,10 @@
+acct_user1,accounting,0700,/samba/departments/accounting/users/acct_user1
+acct_user2,accounting,0700,/samba/departments/accounting/users/acct_user2
+eng_user1,engineering,0700,/samba/departments/engineering/users/eng_user1
+eng_user2,engineering,0700,/samba/departments/engineering/users/eng_user2
+lead_user1,leadership,0700,/samba/departments/leadership/users/lead_user1
+lead_user2,leadership,0700,/samba/departments/leadership/users/lead_user2
+tech_user1,technology,0700,/samba/departments/technology/users/tech_user1
+tech_user2,technology,0700,/samba/departments/technology/users/tech_user2
+sales_user1,sales,0700,/samba/departments/sales/users/sales_user1
+sales_user2,sales,0700,/samba/departments/sales/users/sales_user2

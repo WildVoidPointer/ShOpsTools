@@ -1,0 +1,45 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y samba smbclient sudo expect net-tools vim && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY init_users.sh /init_users.sh
+
+RUN chmod +x /init_users.sh && /init_users.sh
+
+COPY smb.conf /etc/samba/smb.conf
+
+RUN mkdir -p \
+    /samba/public \
+    /samba/company_exchange \
+    /samba/departments/accounting/share \
+    /samba/departments/accounting/users \
+    /samba/departments/engineering/share \
+    /samba/departments/engineering/users \
+    /samba/departments/leadership/share \
+    /samba/departments/leadership/users \
+    /samba/departments/technology/share \
+    /samba/departments/technology/users \
+    /samba/departments/sales/share \
+    /samba/departments/sales/users && \
+    chmod 0555 /samba/public && chown root:company /samba/public && \
+    chmod 0770 /samba/company_exchange && chown root:company /samba/company_exchange && \
+    chmod 0770 /samba/departments/accounting/share && chown root:accounting /samba/departments/accounting/share && \
+    chmod 0750 /samba/departments/accounting/users && chown root:accounting /samba/departments/accounting/users && \
+    chmod 0770 /samba/departments/engineering/share && chown root:engineering /samba/departments/engineering/share && \
+    chmod 0750 /samba/departments/engineering/users && chown root:engineering /samba/departments/engineering/users && \
+    chmod 0770 /samba/departments/leadership/share && chown root:leadership /samba/departments/leadership/share && \
+    chmod 0750 /samba/departments/leadership/users && chown root:leadership /samba/departments/leadership/users && \
+    chmod 0770 /samba/departments/technology/share && chown root:technology /samba/departments/technology/share && \
+    chmod 0750 /samba/departments/technology/users && chown root:technology /samba/departments/technology/users && \
+    chmod 0770 /samba/departments/sales/share && chown root:sales /samba/departments/sales/share && \
+    chmod 0750 /samba/departments/sales/users && chown root:sales /samba/departments/sales/users
+
+
+COPY samba_company_test_tool.sh /samba_company_test_tool.sh
+RUN chmod +x /samba_company_test_tool.sh
+
+CMD ["bash", "-c", "smbd -D && bash /samba_company_test_tool.sh && tail -f /dev/null"]

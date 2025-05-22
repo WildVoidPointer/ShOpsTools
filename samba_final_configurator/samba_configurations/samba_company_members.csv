@@ -1,0 +1,10 @@
+acct_user1,company,accounting
+acct_user2,company,accounting
+eng_user1,company,engineering
+eng_user2,company,engineering
+lead_user1,company,accounting,leadership,engineering,technology,sales
+lead_user2,company,accounting,leadership,engineering,technology,sales
+tech_user1,company,technology
+tech_user2,company,technology
+sales_user1,company,sales
+sales_user2,company,sales
