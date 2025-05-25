@@ -318,7 +318,7 @@ function samba_department_users_space_testing {
         # Create test file in user directory
         touch "${user_dir}/${user}_dir_test.txt"
         chmod 600 "${user_dir}/${user}_dir_test.txt"
-        chown "$user:$user" "${user_dir}/${user}_dir_test.txt"
+        chown "$user:$department" "${user_dir}/${user}_dir_test.txt"
         
         samba_share_space_testing_header_printf "$user" "${department}_department_users/$user"
         

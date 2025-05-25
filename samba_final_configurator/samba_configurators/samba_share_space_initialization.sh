@@ -58,37 +58,58 @@ function samba_usergroup_create {
 
 
 function samba_user_initialization {
-
     local username="$1"
     local password="$2"
-    shift
-    local groups=("$@")
+    shift 2
+    local secondary_groups=("$@")
+
+    if [[ -z "$username" || -z "$password" ]]; then
+        echo "Error: Username and password cannot be empty."
+        return 1
+    fi
 
     if id "$username" &>/dev/null; then
         echo "User '$username' already exists, skipping creation."
     else
-        useradd "$username"
+        local primary_group="${secondary_groups[0]:-}"
+        if [[ -n "$primary_group" ]] && getent group "$primary_group" &>/dev/null; then
+            useradd -g "$primary_group" "$username" || {
+                echo "Failed to create user '$username' with primary group '$primary_group'";
+                return 1;
+            }
+        else
+            useradd -N "$username" || {
+                echo "Failed to create user '$username'";
+                return 1;
+            }
+        fi
         echo "User '$username' created."
     fi
 
-    for group in "${groups[@]}"; do
+    for group in "${secondary_groups[@]}"; do
         if getent group "$group" &>/dev/null; then
             if id -nG "$username" | grep -qw "$group"; then
                 echo "User '$username' is already a member of group '$group'."
             else
-                usermod -aG "$group" "$username"
+                usermod -aG "$group" "$username" || {
+                    echo "Failed to add user '$username' to group '$group'";
+                    continue;
+                }
                 echo "Added user '$username' to group '$group'."
             fi
         else
-            echo "Error: Group '$group' does not exist for user '$username'."
+            echo "Warning: Group '$group' does not exist. Skipping."
         fi
     done
 
     if pdbedit -L | grep -qw "^$username:"; then
         echo "Samba user '$username' already exists, skipping smbpasswd."
     else
-        echo -e "$password\n$password" | smbpasswd -a -s "$username"
-        echo "Samba user '$username' added with default password."
+        printf "%s\n%s\n" "$password" "$password" | smbpasswd -a -s "$username" || {
+            echo "Failed to set Samba password for '$username'";
+            return 1;
+        }
+        echo "Samba user '$username' added."
     fi
 }
 
