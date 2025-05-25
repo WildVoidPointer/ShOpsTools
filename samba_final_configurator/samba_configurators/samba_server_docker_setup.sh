@@ -8,4 +8,6 @@ fi
 
 cp ./smb.conf /etc/samba/
 
-pkill smbd && smbd -D
+pkill smbd 
+
+smbd -D

@@ -12,6 +12,8 @@ SAMBA_USERS_CSV_PATH="./samba_company_members.csv"
 
 DEFAULT_USER_PASSWORD="SambaPass123"
 
+DEFAULT_IFS="$IFS"
+
 
 function samba_require_packages_check {
     for pkg in "$@"; do
@@ -122,8 +124,6 @@ function samba_share_space_dir_create {
 
 function create_dirs_from_csv {
 
-    DEFAULT_IFS="$IFS"
-
     while IFS=, read -r owner group perms path rest; do
 
         [[ -z "$owner" || "$owner" =~ ^# ]] && continue
@@ -153,11 +153,12 @@ function create_users_from_csv {
 
         samba_user_initialization "$username" "$default_password" "${groups[@]}"
     done < "$csv_path"
+
+    IFS="$DEFAULT_IFS"
 }
 
 
 function create_usergroups_from_define_file {
-    DEFAULT_IFS="$IFS"
 
     while IFS=, read -r usergroup; do
 
@@ -177,7 +178,7 @@ fi
 
 create_usergroups_from_define_file "$SAMBA_USERGROUPS_DFEINE_FILE_PATH"
 
-create_users_from_csv "$SAMBA_USERS_CSV_PATH"
+create_users_from_csv "$SAMBA_USERS_CSV_PATH" "$DEFAULT_USER_PASSWORD"
 
 create_dirs_from_csv "$SAMBA_SHARE_SPACE_CSV_PATH"
 
