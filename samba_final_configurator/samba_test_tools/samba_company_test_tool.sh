@@ -292,7 +292,7 @@ function samba_department_share_space_testing {
         echo "Testing delete operation..."
 
         if ! smbclient "//$server_host/$share_name" -U "$user%$password" \
-            -c "del ${user}_new_test.txt" 2>/dev/null | grep "NT_STATUS_ACCESS_DENIED";
+            -c "del ${user}_new_test.txt" | grep "NT_STATUS_ACCESS_DENIED";
         then
             echo "        SUCCESS: $user could delete file in $share_name"
         else

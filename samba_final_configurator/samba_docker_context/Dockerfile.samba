@@ -7,8 +7,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p \
+    /samba \
     /samba/public \
     /samba/company_exchange \
+    /samba/departments \
+    /samba/departments/sales \
+    /samba/departments/accounting \
+    /samba/departments/engineering \
+    /samba/departments/technology \
+    /samba/departments/leadership \
     /samba/departments/accounting/share \
     /samba/departments/accounting/users \
     /samba/departments/engineering/share \
@@ -25,7 +32,22 @@ COPY init_users.sh /init_users.sh
 RUN chmod +x /init_users.sh && /init_users.sh
 
 
-RUN chmod 0555 /samba/public && chown root:company /samba/public && \
+RUN chmod 0710 /samba && \
+    chown root:company /samba && \
+    chown root:company /samba/departments && \
+    chmod 0710 /samba/departments && \
+    chown root:company /samba/departments/sales && \
+    chmod 0710 /samba/departments/sales && \
+    chown root:company /samba/departments/accounting && \
+    chmod 0710 /samba/departments/accounting && \
+    chown root:company /samba/departments/engineering && \
+    chmod 0710 /samba/departments/engineering && \
+    chown root:company /samba/departments/leadership && \
+    chmod 0710 /samba/departments/leadership && \
+    chown root:company /samba/departments/technology && \
+    chmod 0710 /samba/departments/technology && \
+    chmod 0555 /samba/public && \
+    chown root:company /samba/public && \
     chmod 0770 /samba/company_exchange && \
     chown root:company /samba/company_exchange && \
     chmod 0770 /samba/departments/accounting/share && \
@@ -52,6 +74,9 @@ RUN chmod 0555 /samba/public && chown root:company /samba/public && \
 COPY smb.conf /etc/samba/smb.conf
 
 COPY samba_company_test_tool.sh /samba_company_test_tool.sh
+
 RUN chmod +x /samba_company_test_tool.sh
 
-CMD ["bash", "-c", "smbd -D && nmbd -D && bash /samba_company_test_tool.sh && tail -f /dev/null"]
+RUN rm -f /init_users.sh
+
+CMD ["bash", "-c", "smbd -D && nmbd -D && bash /samba_company_test_tool.sh && rm -f /samba_company_test_tool.sh && tail -f /dev/null"]
